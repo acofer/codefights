@@ -2,8 +2,8 @@
 /* https://codefights.com/challenge/4epHLhsXei3JhDY8o */
 var M = Math, q = i => M.pow(i,2);
 
-var sub = (A, i, j) => {
-	/* return submatrix of A without row i, column j */
+var sub = (A, i, j) =>
+	/* return submatrix of A without row i, column j 
 	var r = [], m = 0;
 	for(var k = 0; k < A.length; k++){
 		if(k===i){ continue; }
@@ -14,8 +14,8 @@ var sub = (A, i, j) => {
 		}
 		m++;
 	}
-	return r;
-};
+	return r; */
+	A.map((v)=>v.filter((w,l)=> l!==j)).filter((v,k)=>k!==i);
 
 var det = (A) => {
 	var sum = 0;
@@ -30,32 +30,28 @@ var det = (A) => {
 };
 
 var tri = (a, b, c) => a < b+c && b < a+c && c < a+b;
-var quad = (a, b, c, d, e, f) => tri(a, b, c) && tri(a, d, e) && tri(b, d, f) && tri(c, e, f);
+var quad = (a, b, c, d, e, f) => (tri(a, b, c) && tri(a, d, e) && tri(b, e, f) && tri(c, d, f));
 
 var check = (A, B, C, D, E, F) => {
-	/* Cayley-Menger Determinant is 0, then not a tetrahedron 
+	/* Cayley-Menger Determinant is <= 0, then not a tetrahedron 
 			http://mathworld.wolfram.com/Cayley-MengerDeterminant.html
 	*/
-	if (!quad(A, B, C, D, E, F)){
-		// console.log('Not valid triangles');
-		return false;
-	}
 	var P = [
 		[0,    1,    1,    1,    1],
-		[1,    0, q(A), q(C), q(E)],
-		[1, q(A),    0, q(B), q(D)],
+		[1,    0, q(A), q(C), q(D)],
+		[1, q(A),    0, q(B), q(E)],
 		[1, q(C), q(B),    0, q(F)],
-		[1, q(E), q(D), q(F),    0]
+		[1, q(D), q(E), q(F),    0]
 	];
-	var d = M.abs(M.sqrt(det(P) / 288));
-	// console.log('Determinant: ' + d);
-	return !isNaN(d) && d > 0.00001;
+	return quad(A, B, C, D, E, F) && det(P) > 0;
+	/* var d = M.abs(M.sqrt(det(P) / 288));
+	 * return !isNaN(d) && d > 0.000000001;
+	 */
 };
 
 
-var pr = (str) => {
+var pr = (s) => {
 	/* return next Pandita lexicographic permutation of s */
-	var s = str.split('');
 	var k = -1;
 	for(var i = 0; i < s.length-1; i++){
 		if(s[i] < s[i+1]){
@@ -73,12 +69,13 @@ var pr = (str) => {
 	var t = s[k]; s[k] = s[l]; s[l] = t;
 	var last = s.splice(k+1);
 	last.reverse();
-	return s.join('') + last.join('');
+	return s.concat(last);
 };
 
 function TetrahedronMaxFace(g) {
+	if(g.some(a => a <= 0 || a > M.pow(2,16))){ return 0; }
 	g.sort((a,b)=>a>b?-1:a<b?1:0);
-	var A, B, C, D, E, F, p = '012345';
+	var A, B, C, D, E, F, p = [0,1,2,3,4,5];
 	while(p){
 		A = g[p[0]]; B = g[p[1]]; C = g[p[2]]; D = g[p[3]]; E = g[p[4]]; F = g[p[5]];
 		if(check(A,B,C,D,E,F)){ return A+B+C; }
@@ -109,7 +106,12 @@ console.log(TetrahedronMaxFace(lengths));
 lengths = [1420, 1400, 884, 870, 550, 540]; // 3360
 console.log(TetrahedronMaxFace(lengths));
 
-lengths = [1, 1, 1, 1, 1, 1];
-console.log(TetrahedronMaxFace(lengths));
-lengths = [0, 0, 0, 0, 0, 0];
-console.log(TetrahedronMaxFace(lengths));
+// lengths = [1, 1, 1, 1, 1, 1];
+// console.log(TetrahedronMaxFace(lengths));
+// lengths = [0, 0, 0, 0, 0, 0];
+// console.log(TetrahedronMaxFace(lengths));
+
+lengths = [2819, 2819, 1369, 1340, 1490, 1480];
+console.log(TetrahedronMaxFace(lengths)); // 0
+lengths = [2818, 2819, 1370, 1340, 1489, 1480];
+console.log(TetrahedronMaxFace(lengths)); // 6977
