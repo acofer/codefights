@@ -5,63 +5,46 @@ function parkingSpot(car, p, luckySpot) {
 	// Start from the sides
 	// go down the rows, seeing if car will fit through each column
 	// until it occupies lucky spot
-	var v = isVertical(luckySpot), i, j, k, path;
-	console.log("Vertical: " + v);
-	console.log("p.l: " + (0 <= (p.length - 1 - car[0])) );
-	debugger;
+	var v = isVertical(luckySpot), i, j, k, patha = true, pathb = true;
 	if (!carFitsInSpot(car, p, luckySpot)){ return false; }
 	if (v){
-		// check for zeros either above or below luckySpot
-		path = true;
-		// check above
-		for (i = 0; i <= luckySpot[0]; i++){
-			for (j = luckySpot[1]; j <= luckySpot[1]+(car[1]-1); j++){
+		// check for all zeros either above or below luckySpot
+		for (j = luckySpot[1]; j <= luckySpot[1]+(car[1]-1); j++){
+			// check above
+			for (i = 0; i <= luckySpot[0]; i++){
 				if (p[i][j] === 1){
-					path = false;
+					patha = false;
 					break;
 				}
 			}
-			if (!path){ break; }
-		}
-		if (path){ return true; }
-		// no path above, check from below
-		path = true;
-		for (i = p.length - 1; i >= luckySpot[2]; i--){
-			for (j = luckySpot[1]; j <= luckySpot[1]+(car[1]-1); j++){
+			// check below
+			for (i = p.length - 1; i >= luckySpot[2]; i--){
 				if (p[i][j] === 1){
-					path = false;
+					pathb = false;
 					break;
 				}
 			}
-			if (!path){ break; }
 		}
-		if (path){ return true; }
+		if (patha || pathb){ return true; }
 	} else {
 		// horizontal, check for zeros to left or right of luckySpot
-		path = true;
-		// check left
 		for (i = luckySpot[0]; i <= luckySpot[0]+(car[1]-1); i++){
+			// check left
 			for (j = 0; j <= luckySpot[1]; j++){
 				if (p[i][j] === 1){
-					path = false;
+					patha = false;
 					break;
 				}
 			}
-			if (!path){ break; }
-		}
-		if (path){ return true; }
-		// check right
-		path = true;
-		for (i = luckySpot[0]; i <= luckySpot[0]+(car[1]-1); i++){
+			// check right
 			for (j = p[i].length - 1; j >= luckySpot[3]; j--){
 				if (p[i][j] === 1){
-					path = false;
+					pathb = false;
 					break;
 				}
 			}
-			if (!path){ break; }
 		}
-		if (path){ return true; }
+		if (patha || pathb){ return true; }
 	}
 	// car fits in spot, but there is no path
 	return false;
