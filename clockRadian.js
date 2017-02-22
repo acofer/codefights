@@ -52,11 +52,8 @@ clockRadian = (t) => {
 	return n == '0' ? '0' : n + 'pi' + d;
 };
 
-e = (a,b) => b ? e(b, a%b) : a;
-r = (n,d) => {
-  g = e(n,d);
-  return [n/g, d/g];
-};
+g = (a,b) => b ? g(b, a%b) : a;
+r = (n,d) => [n/g(n,d), d/g(n,d)];
 
 var times = [];
 times.push("3:00"); // pi/2
