@@ -50,32 +50,24 @@
 	}
 */
 
-var p = 0;
-var o = {};
+o = {};
 
-var countValidSnakePaths = (b, e, n) => {
-	var k = JSON.stringify(e) + n, h = e[0], v = [], d;
-	if (o[k]){ return o[k]; }
-	if (h[0] !== 0) v.push([h[0] - 1, h[1]]);
-	if (h[0] + 1 <= b[0] - 1) v.push([h[0] + 1, h[1]]);
-	if (h[1] !== 0) v.push([h[0], h[1] - 1]);
-	if (h[1] + 1 <= b[1] - 1) v.push([h[0], h[1] + 1]);
+i = countValidSnakePaths = (b, e, n) => {
+	var k = e + '' + n, h = e[0];
+	if (o[k]) return o[k];
+	x = h[0];
+	y = h[1];
+	v = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]];
 
 	e.pop();
 	p = 0;
-	for (var m of v){
-		d = true;
-		for (var s of e){
-			if (m[0] === s[0] && m[1] === s[1]){
-				d = false;
-				break;
-			}
-		}
-		if (!d) continue;
-		if (n <= 1){ p += 1; } else { p += countValidSnakePaths(b, [m].concat(e), n-1); }
+	for (let m of v){
+		f = m[0];
+		g = m[1];
+		if (e.some(s => f == -1 || g == -1 || f >= b[0] || g >= b[1] || (f == s[0] && g == s[1]))) continue;
+		p += n <= 1 ? 1 : i(b, [m].concat(e), n-1);
 	}
-	o[k] = p;
-	return p;
+	return o[k] = p;
 };
 
 	var tests = [];
